@@ -50,7 +50,8 @@
             z-index: 100;
         }
 
-        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+        .logo:hover { opacity: 0.8; }
         .logo img { width: 32px; height: 32px; border-radius: 4px; }
         .logo-text { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
@@ -206,7 +207,7 @@
 <body>
 
     <header>
-        <div class="logo">
+        <div class="logo" onclick="showPage('home'); document.querySelectorAll('.nav-btn')[0].classList.add('active'); document.querySelectorAll('.nav-btn')[1].classList.remove('active'); document.querySelectorAll('.nav-btn')[2].classList.remove('active');">
             <img src="cubesmp.png" alt="Icon">
             <span class="logo-text">AnimeSMP</span>
         </div>
