@@ -3,333 +3,374 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeSMP - Подача заявок</title>
+    <title>AnimeSMP</title>
     
     <link rel="icon" href="anmsmpicon.png" type="image/png">
 
     <style>
+        :root {
+            --primary-color: #7c3aed;
+            --bg-dark: #0a0a0a;
+            --panel-bg: #161616;
+            --border-color: #2a2a2a;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('anmsmpbg.png');
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('anmsmpbg.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            background-color: #121212;
-            
-            color: #ffffff; 
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
+            color: var(--text-main);
+            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 40px;
+            display: flex;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            justify-content: space-between;
+            z-index: 100;
         }
 
-        .container { 
-            text-align: center; 
-            max-width: 800px;
-            padding: 20px;
-            backdrop-filter: blur(2px);
-            border-radius: 30px;
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo img { width: 32px; height: 32px; border-radius: 4px; }
+        .logo-text { font-size: 1.1rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
+        nav { display: flex; gap: 8px; }
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-dim);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: 0.3s;
         }
 
-        .main-title {
-            font-size: 4rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ffffff;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        .nav-btn:hover { 
+            color: var(--text-main); 
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(105, 0, 198, 0.3);
         }
+
+        .nav-btn.active { 
+            color: var(--text-main); 
+            border-color: var(--primary-color); 
+            background: rgba(105, 0, 198, 0.1); 
+            box-shadow: 0 0 10px rgba(105, 0, 198, 0.2);
+        }
+
+        .page {
+            display: none;
+            width: 100%;
+            flex: 1;
+            padding: 120px 20px 40px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page.active { display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 900px; text-align: center; }
+        .main-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -1px; }
 
         .description {
             font-size: 1.1rem;
+            color: var(--text-dim);
             line-height: 1.6;
-            color: #ffffff;
-            opacity: 0.8;
             margin-bottom: 40px;
-            max-width: 600px;
+            max-width: 650px;
             margin-left: auto;
             margin-right: auto;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
+
+        .server-ip-box {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .server-ip-box:hover { 
+            border-color: var(--primary-color); 
+            background: #1a1a1a;
+            box-shadow: 0 0 20px rgba(105, 0, 198, 0.2);
+        }
+
+        .ip-status-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; }
+        .server-ip-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary-color); font-weight: 600; }
 
         .btn {
-            background-color: #6900C6;
-            color: #ffffff;
+            background: var(--primary-color);
+            color: white;
             border: none;
-            padding: 18px 45px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
             cursor: pointer;
-            border-radius: 50px; 
+            transition: 0.3s ease;
             position: relative;
-            box-shadow: 0 0 0 0px rgba(18, 18, 18, 0), 0 0 0 0px rgba(105, 0, 198, 0);
-            transition: box-shadow 0.2s ease-out, transform 0.1s ease;
-            outline: none;
         }
 
-        .btn:hover {
-            background-color: #6900C6; 
-            box-shadow: 0 0 0 4px #121212, 0 0 0 7px #6900C6;
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border: 2px solid var(--primary-color);
+            border-radius: 56px;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: 0.3s ease;
+            pointer-events: none;
         }
 
-        .overlay.active {
-            display: flex;
+        .btn:hover::before { 
             opacity: 1;
         }
 
-        form {
-            background: #1c1c1c;
-            padding: 40px;
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            border-radius: 30px;
-            border: 1px solid #333;
-            transform: translateY(15px);
-            transition: transform 0.2s ease;
-        }
-
-        .overlay.active form { transform: translateY(0); }
-
-        .form-title {
-            margin: 0 0 10px 0;
-            color: #ffffff;
-            text-align: center;
-            font-size: 1.8rem;
-        }
-
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        label {
-            font-size: 0.85rem;
-            color: #bbb;
-            margin-left: 8px;
-        }
-
-        input, select {
-            background: #252525;
-            border: 1px solid #3d3d3d;
-            color: #fff;
-            padding: 14px;
-            font-size: 1rem;
-            border-radius: 14px;
-            outline: none;
-            transition: 0.2s;
-        }
-
-        input:focus, select:focus { border-color: #6900C6; }
-
-        .error-msg {
-            color: #ff4444;
-            font-size: 0.8rem;
-            display: none;
-            margin-left: 8px;
-        }
-
-        .btn-submit {
-            margin-top: 15px;
-            width: 100%;
-        }
-
-        .btn-close {
-            background: transparent;
-            border: none;
-            color: #888;
-            cursor: pointer;
-            text-decoration: underline;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
+        .faq-list { text-align: left; width: 100%; max-width: 700px; }
+        .faq-item { background: var(--panel-bg); border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 12px; overflow: hidden; transition: 0.3s; }
+        .faq-item:hover { border-color: var(--border-color); }
+        .faq-item.active { border-color: var(--primary-color); box-shadow: 0 0 15px rgba(105, 0, 198, 0.1); }
         
-        /* Стили для кастомного уведомления */
-        .modal-alert {
-            background: #1c1c1c;
-            padding: 30px;
-            border-radius: 25px;
-            border: 1px solid #6900C6;
-            text-align: center;
-            max-width: 300px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .faq-question { padding: 18px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        .faq-answer { max-height: 0; overflow: hidden; transition: 0.3s ease-out; color: var(--text-dim); padding: 0 24px; }
+        .faq-item.active .faq-answer { max-height: 300px; padding: 0 24px 20px; }
+
+        .overlay {
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(4px);
+            z-index: 200; justify-content: center; align-items: center;
         }
 
-        .modal-alert p {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+        form {
+            background: var(--panel-bg); 
+            border: 2px solid var(--primary-color);
+            padding: 32px; 
+            width: 90%; 
+            max-width: 450px; 
+            border-radius: 24px;
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px;
         }
 
-        .btn-alert-ok {
-            padding: 10px 30px;
-            font-size: 1rem;
+        input, select { background: #0a0a0a; border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 6px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--primary-color); box-shadow: 0 0 10px rgba(105, 0, 198, 0.2); }
+
+        .copy-notification {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #fff; color: #000; padding: 12px 20px;
+            border-radius: 6px; font-weight: 600; z-index: 300;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        select::-webkit-scrollbar {
-            width: 8px;
-        }
-        select::-webkit-scrollbar-thumb {
-            background: #6900C6;
-            border-radius: 10px;
-        }
+        .modal-alert { background: var(--panel-bg); padding: 30px; border-radius: 12px; border: 1px solid var(--primary-color); text-align: center; box-shadow: 0 0 20px rgba(105, 0, 198, 0.3); }
+
+        @media (max-width: 600px) { header { padding: 12px 20px; } .main-title { font-size: 2.2rem; } }
     </style>
 </head>
 <body>
 
-    <div class="container" id="main-screen">
-        <h1 class="main-title">AnimeSMP</h1>
-        <p class="description">
-            Это приватная анархия где у вас есть доступ ко всему, вы можете рейдить, творить что угодно, это сервер без правил. Подав заявку, у вас появляется большой шанс попасть на сервер.
-        </p>
-        <button class="btn" onclick="openForm()">Подать заявку</button>
+    <header>
+        <div class="logo">
+            <img src="cubesmp.png" alt="Icon">
+            <span class="logo-text">AnimeSMP</span>
+        </div>
+        <nav>
+            <button class="nav-btn active" onclick="showPage('home')">Главная</button>
+            <button class="nav-btn" onclick="showPage('application')">Анкета</button>
+            <button class="nav-btn" onclick="showPage('faq')">FAQ</button>
+        </nav>
+    </header>
+
+    <div id="home" class="page active">
+        <div class="container">
+            <h1 class="main-title">AnimeSMP</h1>
+            <p class="description">
+                Это приватная анархия где у вас есть доступ ко всему, вы можете рейдить, творить что угодно, это сервер без правил. Подав заявку, у вас появляется большой шанс попасть на сервер. Наш сервер полностью бесплатен, и попасть на него можно только по анкете.
+            </p>
+            
+            <div class="server-ip-box" onclick="copyIP()">
+                <div class="ip-status-dot"></div>
+                <div class="server-ip-value">voucher-turbulent.gl.joinmc.link</div>
+                <div style="font-size: 0.8rem; color: var(--text-dim); margin-left: 10px;">[КОПИРОВАТЬ]</div>
+            </div>
+
+            <br>
+            <button class="btn" onclick="goToApplication()">Вступить в проект</button>
+        </div>
+    </div>
+
+    <div id="application" class="page">
+        <div class="container">
+            <h2 class="main-title" style="font-size: 2.2rem;">Подача заявки</h2>
+            <p class="description">Заполни данные для получения доступа к серверу.</p>
+            <button class="btn" onclick="openForm()">Открыть анкету</button>
+        </div>
+    </div>
+
+    <div id="faq" class="page">
+        <div class="container">
+            <h2 class="main-title" style="font-size: 2.2rem; margin-bottom: 40px;">Вопросы</h2>
+            <div class="faq-list" style="margin: 0 auto;">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Как попасть на сервер?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Надо оставить анкету тем самым удвоить свой шанс на получение бесплатной проходки на наш сервер
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>Могу ли я зайти с телефона? Ну или же с Bedrock?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Да можешь, ведь наш сервер разрешает заходить как с Java так и с Bedrock edition.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">
+                        <span>У меня пиратка, сижу в TLauncher, смогу зайти?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Да конечно сможешь, у нас можно и на пиратках и на лицензиях, и если вы на лицензии сервер вернет вам ваш скин, и не удалит его
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="form-overlay" class="overlay">
         <form id="application-form">
-            <h2 class="form-title">Анкета игрока</h2>
+            <h2 style="margin-bottom: 10px;">Анкета</h2>
+            <input type="text" name="Nickname" placeholder="Никнейм" required>
+            <input type="number" name="Age" min="13" placeholder="Возраст (13+)" required>
+            <select name="Platform">
+                <option value="Java">Java Edition</option>
+                <option value="Bedrock">Bedrock Edition</option>
+            </select>
+            <input type="text" name="Experience" placeholder="Опыт игры" required>
+            <select name="Type">
+                <option value="Лицензия">Лицензия</option>
+                <option value="Пиратка">Пиратка</option>
+            </select>
+            <input type="number" name="Hours" id="hours" min="1" max="12" placeholder="Часов в день" required>
             
-            <input type="text" name="Nickname" placeholder="Твой ник" required>
-            
-            <div class="field-group">
-                <label>Возраст (минимум 13)</label>
-                <input type="number" name="Age" min="13" placeholder="13" required>
-            </div>
-
-            <div class="field-group">
-                <label>Платформа</label>
-                <select name="Platform">
-                    <option value="Java">Java Edition</option>
-                    <option value="Bedrock">Bedrock Edition</option>
-                </select>
-            </div>
-
-            <input type="text" name="Experience" placeholder="Опыт игры (например: 2 года)" required>
-
-            <div class="field-group">
-                <label>Тип аккаунта</label>
-                <select name="Type">
-                    <option value="Лицензия">Лицензия</option>
-                    <option value="Пиратка">Пиратка</option>
-                </select>
-            </div>
-
-            <div class="field-group">
-                <label>Часов в день (макс. 12)</label>
-                <input type="number" name="Hours" id="hours" min="1" max="12" placeholder="5" required>
-                <span id="error" class="error-msg">Максимум 12 часов!</span>
-            </div>
-
-            <button type="submit" class="btn btn-submit" id="submit-text">Подписать</button>
-            <button type="button" class="btn-close" onclick="closeForm()">Закрыть анкету</button>
+            <button type="submit" class="btn" id="submit-text">Отправить данные</button>
+            <button type="button" style="background:none; border:none; color:var(--text-dim); cursor:pointer; font-size: 0.8rem;" onclick="closeForm()">Отмена</button>
         </form>
     </div>
 
     <div id="alert-overlay" class="overlay">
         <div class="modal-alert">
-            <p id="alert-message">Заявка успешно отправлена!</p>
-            <button class="btn btn-alert-ok" onclick="closeAlert()">ОК</button>
+            <p id="alert-message">Готово</p>
+            <br>
+            <button class="btn" onclick="closeAlert()">ОК</button>
         </div>
     </div>
 
     <script>
-        const overlay = document.getElementById('form-overlay');
-        const alertOverlay = document.getElementById('alert-overlay');
-        const alertMessage = document.getElementById('alert-message');
-        const hoursInput = document.getElementById('hours');
-        const errorMsg = document.getElementById('error');
-        const form = document.getElementById('application-form');
-        const submitBtn = document.getElementById('submit-text');
-
-        function openForm() {
-            overlay.style.display = 'flex';
-            setTimeout(() => overlay.classList.add('active'), 10);
-        }
-
-        function closeForm() {
-            overlay.classList.remove('active');
-            setTimeout(() => overlay.style.display = 'none', 200);
-        }
-
-        // Функции для кастомного уведомления
-        function showAlert(text) {
-            alertMessage.innerText = text;
-            alertOverlay.style.display = 'flex';
-            setTimeout(() => alertOverlay.classList.add('active'), 10);
-        }
-
-        function closeAlert() {
-            alertOverlay.classList.remove('active');
-            setTimeout(() => alertOverlay.style.display = 'none', 200);
-        }
-
-        // Отправка формы
-        form.addEventListener('submit', function(e) {
-            e.preventDefault(); 
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Отправка...';
+            document.getElementById(pageId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
 
-            const formData = new FormData(this);
+        function goToApplication() {
+            document.querySelectorAll('.nav-btn')[1].click();
+        }
+
+        function openForm() { document.getElementById('form-overlay').style.display = 'flex'; }
+        function closeForm() { document.getElementById('form-overlay').style.display = 'none'; }
+
+        function toggleFaq(el) {
+            const item = el.parentElement;
+            item.classList.toggle('active');
+            const icon = el.querySelector('span:last-child');
+            icon.textContent = item.classList.contains('active') ? '−' : '+';
+        }
+
+        function copyIP() {
+            const ip = 'voucher-turbulent.gl.joinmc.link';
+            navigator.clipboard.writeText(ip).then(() => {
+                const n = document.createElement('div');
+                n.className = 'copy-notification';
+                n.textContent = 'IP скопирован';
+                document.body.appendChild(n);
+                setTimeout(() => n.remove(), 2000);
+            });
+        }
+
+        function showAlert(text) {
+            document.getElementById('alert-message').innerText = text;
+            document.getElementById('alert-overlay').style.display = 'flex';
+        }
+
+        function closeAlert() { document.getElementById('alert-overlay').style.display = 'none'; }
+
+        document.getElementById('application-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-text');
+            btn.disabled = true;
+            btn.innerText = 'Загрузка...';
 
             fetch('https://formspree.io/f/xqelvzjd', {
                 method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    showAlert('Заявка успешно отправлена!');
-                    form.reset();
+                body: new FormData(this),
+                headers: { 'Accept': 'application/json' }
+            }).then(res => {
+                if (res.ok) {
+                    showAlert('Заявка отправлена!');
+                    this.reset();
                     closeForm();
                 } else {
-                    showAlert('Ошибка! Подтверди форму на почте.');
+                    showAlert('Ошибка отправки.');
                 }
-            }).catch(error => {
-                showAlert('Ошибка сети. Проверь интернет.');
             }).finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'Подписать';
+                btn.disabled = false;
+                btn.innerText = 'Отправить данные';
             });
         });
-
-        hoursInput.addEventListener('input', function() {
-            if (parseInt(this.value) > 12) {
-                errorMsg.style.display = 'block';
-                this.value = 12;
-            } else {
-                errorMsg.style.display = 'none';
-            }
-        });
-
-        window.onclick = (e) => { 
-            if (e.target == overlay) closeForm(); 
-            if (e.target == alertOverlay) closeAlert();
-        }
     </script>
 </body>
 </html>
