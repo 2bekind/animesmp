@@ -128,7 +128,21 @@
         }
 
         .ip-status-dot { width: 8px; height: 8px; background: #00ff88; border-radius: 50%; box-shadow: 0 0 8px #00ff88; }
+        .ip-status-dot.offline { background: #ff4444; box-shadow: 0 0 8px #ff4444; }
+        
+        .server-info {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        
         .server-ip-value { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary-color); font-weight: 600; }
+        
+        .server-players {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+        }
 
         .btn {
             background: var(--primary-color);
@@ -226,9 +240,12 @@
             </p>
             
             <div class="server-ip-box" onclick="copyIP()">
-                <div class="ip-status-dot"></div>
-                <div class="server-ip-value">voucher-turbulent.gl.joinmc.link</div>
-                <div style="font-size: 0.8rem; color: var(--text-dim); margin-left: 10px;">[КОПИРОВАТЬ]</div>
+                <div class="ip-status-dot" id="server-status"></div>
+                <div class="server-info">
+                    <div class="server-ip-value">voucher-turbulent.gl.joinmc.link</div>
+                    <div class="server-players" id="players-count">Загрузка...</div>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-dim);">[КОПИРОВАТЬ]</div>
             </div>
 
             <br>
@@ -341,6 +358,39 @@
                 setTimeout(() => n.remove(), 2000);
             });
         }
+
+        function checkServerStatus() {
+            const serverAddress = 'voucher-turbulent.gl.joinmc.link';
+            const apiUrl = `https://api.minetools.eu/query/${serverAddress}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const statusDot = document.getElementById('server-status');
+                    const playersCount = document.getElementById('players-count');
+
+                    if (data.online) {
+                        statusDot.classList.remove('offline');
+                        const online = data.players?.online || 0;
+                        const max = data.players?.max || 0;
+                        playersCount.textContent = `${online}/${max} игроков онлайн`;
+                    } else {
+                        statusDot.classList.add('offline');
+                        playersCount.textContent = 'Сервер оффлайн';
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при проверке статуса сервера:', error);
+                    document.getElementById('server-status').classList.add('offline');
+                    document.getElementById('players-count').textContent = 'Не удалось загрузить статус';
+                });
+        }
+
+        // Проверяем статус при загрузке страницы
+        window.addEventListener('load', checkServerStatus);
+
+        // Проверяем статус каждые 30 секунд
+        setInterval(checkServerStatus, 30000);
 
         function showAlert(text) {
             document.getElementById('alert-message').innerText = text;
